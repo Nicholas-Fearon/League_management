@@ -52,6 +52,7 @@ where Players.id=1`);
 
 //endpoint to get roster from single team
 app.get("/rosters/:id", async function (req, res) {
+  console.log(req.params)
   const result = await db.query(`
     SELECT 
     teams.id AS team_id,

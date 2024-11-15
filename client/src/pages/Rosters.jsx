@@ -18,11 +18,11 @@ export default function Rosters() {
 
   return (
     <>
-      <h1>Roster page</h1>
+      <h1> Roster page</h1>
 
       <ul>
         {rosters.map((roster) => (
-          <li key={roster.id}>{roster.name}</li>
+          <li key={roster.id}>{roster.player_name}</li>
         ))}
       </ul>
     </>
