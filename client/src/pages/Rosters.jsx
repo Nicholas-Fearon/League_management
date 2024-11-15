@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function Rosters() {
-  const [players, setPlayers] = useState([]);
+  const [rosters, setRosters] = useState([]);
   const { id } = useParams();
   console.log({ id });
 
   useEffect(() => {
     async function getRosters() {
-      const response = await fetch(`http://localhost:8080/teams/${id}`);
-      const players = await response.json();
-      console.log(players);
-      setPlayers(players);
+      const response = await fetch(`http://localhost:8080/rosters/${id}`);
+      const rosters = await response.json();
+      console.log(rosters);
+      setRosters(rosters);
     }
     getRosters();
   }, [id]);
@@ -21,8 +21,8 @@ export default function Rosters() {
       <h1>Roster page</h1>
 
       <ul>
-        {players.map((player) => (
-          <li key={player.id}>{player.name}</li>
+        {rosters.map((roster) => (
+          <li key={roster.id}>{roster.name}</li>
         ))}
       </ul>
     </>

@@ -51,7 +51,7 @@ where Players.id=1`);
 });*/
 
 //endpoint to get roster from single team
-app.get("/teams/:id", async function (req, res) {
+app.get("/rosters/:id", async function (req, res) {
   const result = await db.query(`
     SELECT 
     teams.id AS team_id,
