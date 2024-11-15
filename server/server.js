@@ -16,6 +16,14 @@ app.get("/", (req, res) => {
   console.log(res);
 });
 
+/*endpoint to get single team
+app.get("/teams", async function (req, res) {
+  const result = await db.query("SELECT * FROM teams where id=1");
+  const teams = result.rows;
+  //send teams to the client
+  res.json(teams);
+});*/
+
 //endpoint to get teams
 app.get("/teams", async function (req, res) {
   const result = await db.query("SELECT * FROM teams");
@@ -24,7 +32,45 @@ app.get("/teams", async function (req, res) {
   res.json(teams);
 });
 
-//endpoint to get players
+/*endpoint to single player
+app.get("/player", async function (req, res) {
+  const result = await db.query(`
+    select 
+players.id,
+players.name,
+players.position,
+players.height,
+players.dob,
+players.birth_place
+ from players
+join teams on players.team_id = teams.id
+where Players.id=1`);
+  const player = result.rows;
+  //send teams to the client
+  res.json(player);
+});*/
+
+//endpoint to get roster from single team
+app.get("/teams/:id", async function (req, res) {
+  const result = await db.query(`
+    SELECT 
+    teams.id AS team_id,
+    teams.name AS team_name,
+    players.id AS player_id,
+    players.name AS player_name,
+    players.position,
+    players.height,
+    players.dob,
+    players.birth_place
+FROM teams
+JOIN players ON players.team_id = teams.id
+WHERE teams.id = ${req.params.id}`);
+  const roster = result.rows;
+  //send teams to the client
+  res.json(roster);
+});
+
+//endpoint to get all players
 app.get("/players", async function (req, res) {
   const result = await db.query(`
     select 
@@ -36,9 +82,9 @@ players.dob,
 players.birth_place
  from players
 join teams on players.team_id = teams.id`);
-  const teams = result.rows;
+  const players = result.rows;
   //send teams to the client
-  res.json(teams);
+  res.json(players);
 });
 
 app.listen(8080, function () {
