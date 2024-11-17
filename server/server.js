@@ -32,7 +32,7 @@ app.get("/teams", async function (req, res) {
   res.json(teams);
 });
 
-//endpoint to single player
+/*//endpoint to single player
 app.get("/playerinfo/:id", async function (req, res) {
   const result = await db.query(`
     select 
@@ -48,7 +48,7 @@ where players.id= ${req.params.id}`);
   const playerinfo = result.rows;
   //send teams to the client
   res.json(playerinfo);
-});
+});*/
 
 //endpoint to get roster from single team
 app.get("/rosters/:id", async function (req, res) {
@@ -106,6 +106,30 @@ app.post("/fanmessage", async (req, res) => {
     "INSERT INTO fan_message (name, message) VALUES ($1, $2) RETURNING *",
     [fanName, fanMsg]
   );
+});
+
+// Endpoint to delete a fan message
+app.delete("/fanmessage/:id", async (req, res) => {
+  const { id } = req.params; // Get the id from the URL
+  try {
+    // Check if the post exists first
+    const checkPost = await db.query(
+      "SELECT * FROM fan_message WHERE id = $1",
+      [id]
+    );
+
+    if (checkPost.rows.length === 0) {
+      return res.json({ message: "Post not found" });
+    }
+
+    // Delete the post from the database
+    await db.query("DELETE FROM fan_message WHERE id = $1", [id]);
+
+    res.json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.json({ message: "Internal server error" });
+  }
 });
 
 app.listen(8080, function () {

@@ -5,7 +5,7 @@ export default function Teams() {
   const [teams, setTeams] = useState([]);
   useEffect(() => {
     async function getTeams() {
-      const response = await fetch("http://localhost:8080/teams");
+      const response = await fetch("https://league-management.onrender.com/teams");
       const teams = await response.json();
       console.log(teams);
       setTeams(teams);

@@ -1,27 +1,29 @@
+// Playerinfo.js
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function Playerinfo() {
-  const [playerInfo, setPlayerInfo] = useState([]);
+  const [player, setPlayer] = useState(null);
   const { id } = useParams();
-  console.log("fetched id:" ,id);
- 
 
   useEffect(() => {
-    async function getPlayerInfo() {
-      const response = await fetch(`http://localhost:8080/players/${id}`);
-      const playerInfo = await response.json();
-
-      setPlayerInfo(playerInfo);
-      console.log(playerInfo);
+    async function fetchPlayer() {
+      const response = await fetch(
+        `https://league-management.onrender.com/player/${id}`
+      );
+      const data = await response.json();
+      setPlayer(data);
     }
-    getPlayerInfo();
+    fetchPlayer();
   }, [id]);
 
+  if (!player) return <p>Loading...</p>;
+
   return (
-    <>
-      <h1>Player Info</h1>
-      {<p>{playerInfo.name}</p>}
-    </>
+    <div>
+      <h1>{player.player_name}</h1>
+      <p>Position: {player.position}</p>
+      <p>Team: {player.team_name}</p>
+    </div>
   );
 }

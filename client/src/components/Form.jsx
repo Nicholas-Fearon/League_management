@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Form() {
   const [form, setForm] = useState({
@@ -6,40 +6,94 @@ export default function Form() {
     message: "",
   });
 
-  //gets messages and inserts on page
+  const [fanMsg, setFanMsg] = useState([]); // Array to store all messages
+
+  // Fetches messages and updates state
   const getMessages = async () => {
-    const res = await fetch("http://localhost:8080/fanmessage");
-    const messages = await res.json();
-    console.log(messages);
+    try {
+      const res = await fetch(
+        "https://league-management.onrender.com/fanmessage"
+      );
+      const messages = await res.json();
+      setFanMsg(messages); // Store messages in state
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
   };
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    console.log(form);
-    setForm({ name: "", message: "" });
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const formObj = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch(
+        "https://league-management.onrender.com/fanmessage",
+        {
+          method: "POST",
+          body: JSON.stringify(formObj),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Error posting message");
+      }
+
+      const data = await res.json();
+      console.log(data);
+
+      setForm({ name: "", message: "" }); // Clear form after successful submission
+      getMessages(); // Refresh messages after submission
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  // Function to delete a message
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(
+        `https://league-management.onrender.com/fanmessage/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (res.ok) {
+        // Optimistically remove the deleted message from the UI
+        setFanMsg((prevMessages) =>
+          prevMessages.filter((msg) => msg.id !== id)
+        );
+      } else {
+        const data = await res.json();
+        alert(data.message || "Error deleting message");
+      }
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
 
   function handleChange(event) {
-    const key = event.target.name;
-    const value = event.target.value;
-    const newForm = { ...form, [key]: value };
-    setForm(newForm);
-
-    // or
-    // setForm({ ...form, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setForm((prevForm) => ({ ...prevForm, [name]: value }));
   }
-  getMessages();
+
+  useEffect(() => {
+    getMessages();
+  }, []);
 
   return (
     <div>
       <h1>Fan Posts!</h1>
       <form onSubmit={handleSubmit}>
-        <label>Name</label>
+        <label>Fan Name</label>
         <input
           name="name"
           placeholder="name"
           onChange={handleChange}
-          value={form.setup}
+          value={form.name}
         />
 
         <label>Message</label>
@@ -47,13 +101,22 @@ export default function Form() {
           name="message"
           placeholder="message"
           onChange={handleChange}
-          value={form.punchline}
+          value={form.message}
         />
 
-        <button>Submit</button>
+        <button type="submit">Submit</button>
       </form>
-      <p>Name: {form.name}</p>
-      <p>Message: {form.message}</p>
+      <div>
+        <h1>Fan Messages</h1>
+        <ul>
+          {fanMsg.map((msg) => (
+            <li key={msg.id}>
+              <strong>{msg.name}:</strong> {msg.message}
+              <button onClick={() => handleDelete(msg.id)}>Delete</button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

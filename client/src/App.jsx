@@ -11,7 +11,6 @@ export default function App() {
     <>
       <Nav />
 
-      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/teams" element={<Teams />} />
