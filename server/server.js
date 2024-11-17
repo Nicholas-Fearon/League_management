@@ -52,7 +52,7 @@ where players.id= ${req.params.id}`);
 
 //endpoint to get roster from single team
 app.get("/rosters/:id", async function (req, res) {
-  console.log(req.params)
+  console.log(req.params);
   const result = await db.query(`
     SELECT 
     teams.id AS team_id,
@@ -88,7 +88,6 @@ join teams on players.team_id = teams.id`);
   res.json(players);
 });
 
-
 //endpoint to get fan messages
 app.get("/fanmessage", async function (req, res) {
   // select all of the guestbooks
@@ -100,14 +99,15 @@ app.get("/fanmessage", async function (req, res) {
 
 //endpoint for posted fan messages
 app.post("/fanmessage", async (req, res) => {
-  const fanName = req.body.fan;
+  const fanName = req.body.name;
   const fanMsg = req.body.message;
   console.log(fanName, fanMsg);
   const result = await db.query(
     "INSERT INTO fan_message (name, message) VALUES ($1, $2) RETURNING *",
     [fanName, fanMsg]
-);
+  );
+});
 
 app.listen(8080, function () {
   console.log(`Server is running on port 8080`);
-})})
+});

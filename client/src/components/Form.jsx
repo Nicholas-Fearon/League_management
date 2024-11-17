@@ -6,6 +6,13 @@ export default function Form() {
     message: "",
   });
 
+  //gets messages and inserts on page
+  const getMessages = async () => {
+    const res = await fetch("http://localhost:8080/fanmessage");
+    const messages = await res.json();
+    console.log(messages);
+  };
+
   function handleSubmit(event) {
     event.preventDefault();
     console.log(form);
@@ -21,6 +28,7 @@ export default function Form() {
     // or
     // setForm({ ...form, [event.target.name]: event.target.value });
   }
+  getMessages();
 
   return (
     <div>
