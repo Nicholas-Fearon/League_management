@@ -32,8 +32,8 @@ app.get("/teams", async function (req, res) {
   res.json(teams);
 });
 
-/*endpoint to single player
-app.get("/player", async function (req, res) {
+//endpoint to single player
+app.get("/playerinfo/:id", async function (req, res) {
   const result = await db.query(`
     select 
 players.id,
@@ -44,11 +44,11 @@ players.dob,
 players.birth_place
  from players
 join teams on players.team_id = teams.id
-where Players.id=1`);
-  const player = result.rows;
+where players.id= ${req.params.id}`);
+  const playerinfo = result.rows;
   //send teams to the client
-  res.json(player);
-});*/
+  res.json(playerinfo);
+});
 
 //endpoint to get roster from single team
 app.get("/rosters/:id", async function (req, res) {
@@ -88,6 +88,26 @@ join teams on players.team_id = teams.id`);
   res.json(players);
 });
 
+
+//endpoint to get fan messages
+app.get("/fanmessage", async function (req, res) {
+  // select all of the guestbooks
+  const result = await db.query("SELECT * FROM fan_message");
+  const message = result.rows;
+  // send guestbook to the client
+  res.json(message);
+});
+
+//endpoint for posted fan messages
+app.post("/fanmessage", async (req, res) => {
+  const fanName = req.body.fan;
+  const fanMsg = req.body.message;
+  console.log(fanName, fanMsg);
+  const result = await db.query(
+    "INSERT INTO fan_message (name, message) VALUES ($1, $2) RETURNING *",
+    [fanName, fanMsg]
+);
+
 app.listen(8080, function () {
   console.log(`Server is running on port 8080`);
-});
+})})

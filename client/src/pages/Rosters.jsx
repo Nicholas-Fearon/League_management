@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 export default function Rosters() {
   const [rosters, setRosters] = useState([]);
   const { id } = useParams();
-  console.log({ id });
+  console.log("Fetched id:=", id);
 
   useEffect(() => {
     async function getRosters() {
@@ -22,7 +22,9 @@ export default function Rosters() {
 
       <ul>
         {rosters.map((roster) => (
-          <li key={roster.id}>{roster.player_name}</li>
+          <li key={roster.id}>
+            <Link to={`/playerinfo/${roster.id}`}>{roster.player_name}</Link>
+          </li>
         ))}
       </ul>
     </>
