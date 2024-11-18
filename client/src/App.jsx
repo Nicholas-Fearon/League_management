@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Nav from "./components/Nav";
 import Teams from "./pages/Teams";
 import Rosters from "./pages/Rosters";
-import Players from "./pages/players";
+import Players from "./pages/Players";
 import Home from "./pages/Home";
 import Playerinfo from "./pages/Playerinfo";
 
