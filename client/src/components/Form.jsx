@@ -107,7 +107,6 @@ export default function Form() {
         <button type="submit">Submit</button>
       </form>
       <div>
-        <h1>Fan Messages</h1>
         <ul>
           {fanMsg.map((msg) => (
             <li key={msg.id}>
